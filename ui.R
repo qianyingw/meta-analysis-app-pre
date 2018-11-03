@@ -1,7 +1,7 @@
 # This is a Shiny web application for meta-analysis
 # by Qianying Wang @CAMARADES
 # ui.R
-# https://qianying.shinyapps.io/Multi/
+# https://camarades.shinyapps.io/meta-analysis-app/
 
 
 library(shiny)

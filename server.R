@@ -1,7 +1,7 @@
 # This is a Shiny web application for meta-analysis
 # by Qianying Wang @CAMARADES
 # server.R
-# https://qianying.shinyapps.io/Multi/
+# https://camarades.shinyapps.io/meta-analysis/
 
 
 library(shiny)
@@ -22,7 +22,7 @@ shinyServer(function(input, output, session) {
   dataset <- reactive({
     inFile = input$file
     if (is.null(inFile)) { 
-      dataset <- read.csv("HIV_Antiret_Model_Rat_Nested.csv", header = T, row.names = NULL, stringsAsFactors = F)
+      stop("No file uploaded.")
     }
     dataset <- read.csv(inFile$datapath, header = T, row.names = NULL, stringsAsFactors = F)
     # dataset <- na.omit(dataset)
@@ -35,7 +35,7 @@ shinyServer(function(input, output, session) {
   yivi <- reactive({
     
     if (is.null(dataset()))
-      return(NULL)
+      stop("No file uploaded.")
     else
       dat <- dataset()
     # dat<- read.csv("C:/Users/wqy/Desktop/DevelopmentalAllSeparate_MODEL.csv",stringsAsFactors=F,header=T)
