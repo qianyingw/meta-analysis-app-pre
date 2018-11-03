@@ -2,10 +2,7 @@
 # by Qianying Wang @CAMARADES
 # ui.R
 # https://camarades.shinyapps.io/meta-analysis-app/
-<<<<<<< HEAD
 
-=======
->>>>>>> aa3c1daa4d79102847aaba7f00484dc7be21a4b9
 
 library(shiny)
 library(metafor)
