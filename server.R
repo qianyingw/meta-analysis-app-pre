@@ -217,7 +217,8 @@ shinyServer(function(input, output, session) {
       
       res <-  metabin(event.e = ai, n.e = ai + bi, 
                       event.c = ci, n.c = ci + di,
-                      sm = "OR", method = "MH", method.tau = "DL")
+                      sm = "OR", method = "MH", method.tau = "DL",
+                      hakn = input$KnHaTest)
       
       lnORi = res$TE     # log(ai*di/(bi*ci))
       SElnORi = res$seTE # sqrt(1/ai + 1/bi + 1/ci + 1/di)
@@ -264,7 +265,8 @@ shinyServer(function(input, output, session) {
                             event.c = ci, n.c = ci + di,
                             data = yv,
                             sm = "OR", method = "MH",
-                            method.tau = input$HetEstimator))
+                            method.tau = input$HetEstimator,
+                            hakn = input$KnHaTest))
       
     } else {
       res = summary(metagen(TE = yi, 
@@ -272,7 +274,7 @@ shinyServer(function(input, output, session) {
                             data = yv, 
                             comb.fixed = F,
                             method.tau = input$HetEstimator, 
-                            hakn = T))
+                            hakn = input$KnHaTest))
     }
     
     res
@@ -301,7 +303,8 @@ shinyServer(function(input, output, session) {
                     data = yv,
                     sm = "OR", method = "MH", 
                     comb.fixed = F,
-                    method.tau = input$HetEstimator)
+                    method.tau = input$HetEstimator,
+                    hakn = input$KnHaTest)
       
     } else {
       res = metagen(TE = yi, 
@@ -309,7 +312,7 @@ shinyServer(function(input, output, session) {
                     data = yv, 
                     comb.fixed = F,
                     method.tau = input$HetEstimator, 
-                    hakn = T)
+                    hakn = input$KnHaTest)
     }
     
     # Order of individual studies displayed on forest plot 
@@ -473,7 +476,7 @@ shinyServer(function(input, output, session) {
                           data = yv, 
                           comb.fixed = F,
                           method.tau = input$HetEstimator,
-                          hakn = T))
+                          hakn = input$KnHaTest))
     
     
     
@@ -545,7 +548,7 @@ shinyServer(function(input, output, session) {
                         data = yv, 
                         comb.fixed = F,
                         method.tau = input$HetEstimator,
-                        hakn = T)) 
+                        hakn = input$KnHaTest)) 
     
     df2 = data.frame(
       # residual heterogeneity Q
@@ -586,7 +589,7 @@ shinyServer(function(input, output, session) {
                           data = yv, 
                           comb.fixed = F,
                           method.tau = input$HetEstimator,
-                          hakn = T))
+                          hakn = input$KnHaTest))
     
     
     mod <- metagen(TE = yi, 
@@ -595,7 +598,7 @@ shinyServer(function(input, output, session) {
                    data = yv, 
                    comb.fixed = F,
                    method.tau = input$HetEstimator,
-                   hakn = T)
+                   hakn = input$KnHaTest)
     
     # calculate number of animals in each group
     tem = aggregate(yv$ni, by = list(gro=yv[,input$subvar]), FUN = sum)
@@ -674,12 +677,14 @@ shinyServer(function(input, output, session) {
       mo = paste(form.c, form.d, collapse="+")
     }
     
+    khtest = "z"
+    if (input$KnHaTest == T) { khtest="knha"}
     # meta-regression
     rma(yi = yi, 
         vi = vi, 
         mods = as.formula(mo), 
         data = yv, 
-        method = input$HetEstimator, test="knha")
+        method = input$HetEstimator, test = khtest)
   })
   
   
@@ -739,7 +744,7 @@ shinyServer(function(input, output, session) {
                    byvar = yv[,input$dis.forest],
                    data = yv, 
                    method.tau = input$HetEstimator,
-                   hakn = T)
+                   hakn = input$KnHaTest)
     
     # columns to be plotted on the right side of the forest plot
     # show weight of fixed-effect model or not
@@ -830,13 +835,16 @@ shinyServer(function(input, output, session) {
     lab = input$con.regplot          # Name of the continuous variable
     Cont = as.numeric(yv[,lab])
     
+    
+    khtest = "z"
+    if (input$KnHaTest == T) { khtest="knha"}
     # Univariate meta-regression
     res <- rma(yi = yi, 
                vi = vi, 
                mods = ~Cont, 
                data = yv, 
                method = input$HetEstimator,
-               test="knha")
+               test = khtest)
     
     Effect.Size = yv[,"yi"]
     Size = 1/yv[,"vi"]
@@ -983,7 +991,7 @@ shinyServer(function(input, output, session) {
                        data = yv, 
                        comb.fixed = F, 
                        method.tau = input$HetEstimator,
-                       hakn = T
+                       hakn = input$KnHaTest
         )
         
         
@@ -1090,20 +1098,22 @@ shinyServer(function(input, output, session) {
         
         mylist <- split(yv, yv[,lab[[j]]], drop = T)
         
+        khtest = "z"
+        if (input$KnHaTest == T) { khtest="knha"}
         # Do meta-regression
         res <- rma(yi = yi, 
                    vi = vi, 
                    data = yv, 
                    mods = ~factor(yv[,lab[[j]]])-1, 
                    method = input$HetEstimator,
-                   test="knha")
+                   test=khtest)
         
         # global meta-analysis
         glob <- rma(yi = yi, 
                     vi = vi, 
                     data = yv, 
                     method = input$HetEstimator,
-                    test="knha")
+                    test=khtest)
         
         lev = rownames(res$b) # names for all the levels of one variable
         tem = aggregate(yv$ni, by = list(gro=yv[,lab[[j]]]), FUN = sum)
@@ -1228,7 +1238,7 @@ shinyServer(function(input, output, session) {
                      data = yv, 
                      comb.fixed = F,
                      method.tau = input$HetEstimator,
-                     hakn = T)
+                     hakn = input$KnHaTest)
       
       
       tem = aggregate(yv$ni, by = list(gro=yv[,lab]), FUN = sum)
@@ -1265,6 +1275,9 @@ shinyServer(function(input, output, session) {
     # meta-regression bar info
     if (input$HetMethod == "reg"){
       
+      khtest = "z"
+      if (input$KnHaTest == T) { khtest="knha"}
+      
       # Split into subgroups
       mylist <- split(yv, yv[,lab], drop = T)
       # Do meta-regression
@@ -1273,13 +1286,13 @@ shinyServer(function(input, output, session) {
                  mods = ~factor(yv[,lab])-1,
                  data = yv, 
                  method = input$HetEstimator,
-                 test="knha")
+                 test=khtest)
       # global meta-analysis
       glob <- rma(yi = yi, 
                   vi = vi, 
                   data = yv,
                   method = input$HetEstimator,
-                  test="knha")
+                  test=khtest)
       
       lev = rownames(res$b) # names for all the levels of one variable
       
@@ -1319,11 +1332,13 @@ shinyServer(function(input, output, session) {
       }
     }
     
+    khtest = "z"
+    if (input$KnHaTest == T) { khtest="knha"}
     
     res <- rma(yi = yi, vi = vi, ni = ni, 
                data = yv, 
                method = input$HetEstimator,
-               test="knha")
+               test=khtest)
     trimfill(res, estimator = "L0", side = input$TafSide)
     
     # res <- metagen(TE=yi, seTE=sqrt(vi), data=yv, comb.fixed=F, method.tau=input$meth)
@@ -1346,11 +1361,12 @@ shinyServer(function(input, output, session) {
       }
     }
     
-    
+    khtest = "z"
+    if (input$KnHaTest == T) { khtest="knha"}
     res <- rma(yi = yi, vi = vi, ni = ni, 
                data = yv, 
                method = input$HetEstimator,
-               test="knha")
+               test=khtest)
     taf <- trimfill(res, estimator = "L0", side = input$TafSide)
     
     xmin = min(min(taf$yi)-0.1*(max(taf$yi)-min(taf$yi)), 0)

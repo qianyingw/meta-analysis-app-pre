@@ -68,7 +68,10 @@ shinyUI(fluidPage(
                                  "Maximum-likelihood" = "ML", 
                                  "Restricted maximum-likelihood" = "REML", 
                                  "Empirical Bayes" = "EB"),
-                  selected = "REML")
+                  selected = "REML"),
+      
+      hr(),
+      checkboxInput(inputId = "KnHaTest", label = "Fit with Knapp and Hartung method", value = F)
     ),
     
     mainPanel(
@@ -151,7 +154,8 @@ shinyUI(fluidPage(
                               ),
 
                               sliderInput(inputId = "GapRight", label = "Right gap", min = 0, max = 10, value = 1),
-                              sliderInput(inputId = "ForWinHeight", label = "Figure height (px)", min=400, max=2000, value = 400),
+                              numericInput(inputId = "ForWinHeight", label = "Figure height (px)", value = 400, min = NA, max = NA, step = NA),
+                              # sliderInput(inputId = "ForWinHeight", label = "Figure height (px)", min=400, max=2000, value = 400),
                               
                               # HTML("<br><br>"),
                               
@@ -239,7 +243,8 @@ shinyUI(fluidPage(
                                                  ),
                                                  
                                                  sliderInput(inputId = "SubGapRight", label = "Right gap", min = 0, max = 10, value = 1),
-                                                 sliderInput(inputId = "SubWinHeight", label = "Height (px)", min = 400, max = 2000, value = 400),
+                                                 numericInput(inputId = "SubWinHeight", label = "Height (px)", value = 400, min = NA, max = NA, step = NA),
+                                                 # sliderInput(inputId = "SubWinHeight", label = "Height (px)", min = 400, max = 2000, value = 400),
                                                 
                                                  HTML("<br><br>"),
                                                  
